@@ -16,9 +16,20 @@ CHIP PC {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+    // The stored value
+	Register(in=resetIn, load=updateRegister, out=out, out=registerValue);
+
+	// Should the stored value be updated?
+    Or(a=load, b=inc, out=u0);
+    Or(a=u0, b=reset, out=updateRegister);
+
+    // Increment
+    Inc16(in=registerValue, out=i0);
+    Mux16(a=in, b=i0, sel=inc, out=incrementedIn);
+
+    // Load
+    Mux16(a=incrementedIn, b=in, sel=load, out=loadedIn);
+
+    // Reset
+    Mux16(a=loadedIn, b=false, sel=reset, out=resetIn);
 }
-
-
-
-
